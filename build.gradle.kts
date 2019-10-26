@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import org.apache.tools.ant.taskdefs.condition.Os
+import java.net.URL
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -82,12 +82,6 @@ group = name
 version = "0.1.0"
 
 /**
- * Make the name of the project to the value of the key 'moduleName'
- * in the project's extra properties.
- */
-extra["moduleName"] = name
-
-/**
  * Configure the repositories.
  */
 repositories {
@@ -130,6 +124,8 @@ configurations {
  * Configure the dependencies of the project.
  */
 dependencies {
+    compile(dependencyNotation = gradleApi())
+
     /**
      * Test dependency to the JUnit 5 Jupiter supported framework for Kotlin.
      */
@@ -155,18 +151,11 @@ dependencies {
 
 /**
  * If the Gradle 'wrapper' task is executed, the generated 'gradlew' file is extended
- * by additional shell code for the download of openJDK 11.0.2 if no 'JAVA_HOME' is
+ * by additional shell code for the download of AdoptOpenJDK 8u202-b08 if no 'JAVA_HOME' is
  * already defined.
  */
 jdk {
-    version = "11.0.2"
-    urlTemplate = "https://download.java.net/java/GA/jdk11/9/GPL/openjdk-\${version}_${
-        when {
-            Os.isFamily(Os.FAMILY_MAC) -> "osx"
-            Os.isFamily(Os.FAMILY_WINDOWS) -> "windows"
-            else -> "linux"
-        }
-    }-x64_bin.${if (Os.isFamily(Os.FAMILY_WINDOWS)) "zip" else "tar.gz"}"
+    useAdoptOpenJdk8("jdk8u202-b08")
 }
 
 /**
@@ -240,41 +229,33 @@ tasks {
  * evaluated.
  */
 afterEvaluate {
-    /**
-     * Obtain the value for the key 'moduleName' from the
-     * extra properties of the project.
-     */
-    val moduleName: String by extra
 
     /**
      * Configure the task of the project.
      */
     tasks {
         /**
-         * Compile Kotlin based on the jvmTarget version.
+         * Configuration of all Kotlin compile tasks to use the jvmTarget 1.8.
          */
-        withType(KotlinCompile::class.java) {
+        withType(KotlinCompile::class) {
             kotlinOptions {
                 /**
                  * Extract the value for the key 'kotlinJvmTarget' from the project's properties
                  * defined in the file 'gradle.properties'.
                  */
                 val kotlinJvmTarget: String by project
-
                 jvmTarget = kotlinJvmTarget
             }
         }
+
         /**
-         * Compile Java using the Jigsaw module path.
+         * Configures all Java compile tasks to use Java 1.8.
          */
-        "compileJava"(JavaCompile::class) {
-            inputs.property("moduleName", moduleName)
-            doFirst {
-                options.compilerArgs = listOf(
-                    "--module-path", classpath.asPath,
-                    "--module-version", version.toString()
-                )
-                classpath = files()
+        withType(JavaCompile::class) {
+            options.apply {
+                val javaVersion = JavaVersion.VERSION_1_8.toString()
+                targetCompatibility = javaVersion
+                sourceCompatibility = javaVersion
             }
         }
 
@@ -282,7 +263,6 @@ afterEvaluate {
          * Enable Junit 5 Jupiter during the test runtime.
          */
         "test"(Test::class) {
-            inputs.property("moduleName", moduleName)
             useJUnitPlatform()
         }
 
@@ -294,13 +274,22 @@ afterEvaluate {
         }
 
         /**
-         * Produce the html documentation for the Kotlin files inside the
+         * Produce the javadoc documentation for the Kotlin files inside the
          * output directory of the disabled 'javadoc' task
          */
         val dokka by getting(DokkaTask::class) {
-            inputs.property("moduleName", moduleName)
-            outputFormat = "html"
+            outputFormat = "javadoc"
             outputDirectory = javadoc.destinationDir?.absolutePath ?: ""
+            configuration {
+                externalDocumentationLink {
+                    val externalGradleJavaDocUrl = "https://docs.gradle.org/current/javadoc/"
+                    url = URL(externalGradleJavaDocUrl)
+                    packageListUrl = URL("${externalGradleJavaDocUrl}package-list")
+                }
+                skipDeprecated = true
+                skipEmptyPackages = true
+                reportUndocumented = true
+            }
         }
 
         /**
@@ -319,42 +308,3 @@ afterEvaluate {
  * the Windows operating system, these tasks are executed automatically.
  */
 defaultTasks("clean", "build")
-
-/**
- * Configure the destination directory of the 'compileKotlin' task to the
- * destination directory of the 'compileJava' task.
- */
-configureKotlinDestinationDir(
-    javaCompileTaskName = "compileJava",
-    kotlinCompileTaskName = "compileKotlin"
-)
-
-/**
- * Configure the destination directory of the 'compileTestKotlin' task to the
- * destination directory of the 'compileTestJava' task.
- */
-configureKotlinDestinationDir(
-    javaCompileTaskName = "compileTestJava",
-    kotlinCompileTaskName = "compileTestKotlin"
-)
-
-/**
- * Reusable function for making the output directory of the Java compilation
- * to the output directory of the corresponding Kotlin compile task.
- *
- * Needed for making the Jigsaw module system able to find the .class files
- * based on the *.kt files.
- *
- * @param [javaCompileTaskName] The name of the Java compile task.
- * @param [kotlinCompileTaskName] The name of the Kotlin compile task.
- */
-fun configureKotlinDestinationDir(
-    javaCompileTaskName: String,
-    kotlinCompileTaskName: String
-) {
-    val compileJava = tasks.getByName(javaCompileTaskName) as JavaCompile
-
-    (tasks.getByName(kotlinCompileTaskName) as KotlinCompile).apply {
-        destinationDir = compileJava.destinationDir
-    }
-}
