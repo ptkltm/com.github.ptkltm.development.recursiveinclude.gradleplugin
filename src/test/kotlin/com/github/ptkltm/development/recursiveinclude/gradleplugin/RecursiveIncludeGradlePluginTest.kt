@@ -226,6 +226,7 @@ tasks {
      * 'com.github.ptkltm.development.recursiveinclue' plugin during a Gradle build.
      * For more information see the method-level documentation of [verifyRecursiveBuildInclude].
      *
+     * @receiver The path of the parent directory.
      * @param [subProjectBuildGradleName] 'build.gradle' or 'build.gradle.kts'.
      * @param [subProjectBuildGradleContent] The content of the build.gradle(.kts) file of the sub projects.
      */
@@ -249,6 +250,7 @@ tasks {
      * 'com.github.ptkltm.development.recursiveinclue' plugin during a Gradle build.
      * For more information see the method-level documentation of [verifyRecursiveBuildInclude].
      *
+     * @receiver The path of the parent directory.
      * @param [subProjectBuildGradleName] 'build.gradle' or 'build.gradle.kts'.
      * @param [subProjectBuildGradleContent] The content of the build.gradle(.kts) file of the sub projects.
      * @param [subProjectSettingsGradleName] settings.gradle (for Groovy syntax) or settings.gradle.kts
@@ -486,8 +488,8 @@ apply {
             assertFalse(
                 actual = File("${it.toAbsolutePath()}${File
                         .separatorChar}${Project.DEFAULT_BUILD_DIR_NAME}").exists(),
-                message = "The directory 'build' of the hidden folder ${hiddenSubBuildDirectoryPath
-                        .toAbsolutePath()} was executed."
+                message = "The directory '${Project.DEFAULT_BUILD_DIR_NAME}' of the folder '${it
+                        .toAbsolutePath()}' was executed."
             )
         }
 
