@@ -1,4 +1,4 @@
-# com.github.ptkltm.development.recursiveinclude.gradleplugin
+# Recursive Include Plugin
 Gradle Plugin for the settings.gradle(.kts) file that automatically includes nested sub builds and sub projects.
 
 ## Implementation description
@@ -26,3 +26,19 @@ After one of the four files - 'settings.gradle', 'settings.gradle.kts', 'build.g
 - `git clone https://github.com/ptkltm/com.github.ptkltm.development.recursiveinclude.gradleplugin.git`
 - `cd com.github.ptkltm.development.recursiveinclude.gradleplugin`
 - `./gradlew` (on Linux or macOS) / `gradlew.bat` (on Windows)
+
+## License information
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
