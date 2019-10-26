@@ -84,7 +84,7 @@ class RecursiveIncludeGradlePlugin : Plugin<Settings> {
     }
 
     /**
-     * Returns true if the current [File] is neither visible (by starting with a '.')
+     * Returns true if the current [File] is neither invisible (by starting with a '.')
      * nor contained in the automatically generated 'build' directory.
      */
     private
