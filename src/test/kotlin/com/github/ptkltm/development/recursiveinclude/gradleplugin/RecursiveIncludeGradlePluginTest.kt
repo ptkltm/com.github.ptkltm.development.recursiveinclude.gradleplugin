@@ -488,7 +488,7 @@ apply {
             assertFalse(
                 actual = File("${it.toAbsolutePath()}${File
                         .separatorChar}${Project.DEFAULT_BUILD_DIR_NAME}").exists(),
-                message = "The directory '${Project.DEFAULT_BUILD_DIR_NAME}' of the folder '${it
+                message = "The task '$BUILD_TASK_NAME' of the folder '${it
                         .toAbsolutePath()}' was executed."
             )
         }
