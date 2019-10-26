@@ -140,9 +140,10 @@ class RecursiveIncludeGradlePlugin : Plugin<Settings> {
             subDirectories.forEach { applyDirectoryRecursive(directory = it) }
         } else {
             LOGGER.debug("Project.DEFAULT_BUILD_FILE: ${gradleBuildFile.absolutePath}.")
-            val subProjectPath = "${Project.PATH_SEPARATOR}${gradleBuildFile.parentFile.name}"
+            val subProjectDirectory = gradleBuildFile.parentFile
+            val subProjectPath = "${Project.PATH_SEPARATOR}${subProjectDirectory.name}"
             include(subProjectPath)
-            project(subProjectPath).projectDir = File(buildRelativePath(file = gradleBuildFile))
+            project(subProjectPath).projectDir = subProjectDirectory
         }
     }
 
@@ -160,7 +161,7 @@ class RecursiveIncludeGradlePlugin : Plugin<Settings> {
     private
     fun File.isGradleFile(
         buildFileName: String
-    ): Boolean = buildFileName == name || "$buildFileName.kts" == name
+    ) = buildFileName == name || "$buildFileName.kts" == name
 
     /**
      * Get the relative location of the root directory's settings.gradle(.kts) file (where the
