@@ -72,7 +72,7 @@ plugins {
 }
 
 /**
- * Make the name of the project group to the name of the project.
+ * Declares the name of the project group to the name of the project.
  */
 group = name
 
@@ -82,7 +82,7 @@ group = name
 version = "0.2.0"
 
 /**
- * Configure the repositories.
+ * Configures the repositories.
  */
 repositories {
     /**
@@ -97,7 +97,7 @@ repositories {
  */
 configurations {
     /**
-     * Extract the value for the key 'junitVersion' from the projects's properties
+     * Extracts the value for the key 'junitVersion' from the projects's properties
      * defined in the file 'gradle.properties'.
      */
     val junitVersion: String by project
@@ -121,18 +121,16 @@ configurations {
 }
 
 /**
- * Configure the dependencies of the project.
+ * Configures the dependencies of the project.
  */
 dependencies {
-    compile(dependencyNotation = gradleApi())
-
     /**
      * Test dependency to the JUnit 5 Jupiter supported framework for Kotlin.
      */
     testImplementation(dependencyNotation = kotlin(module = "test-junit5"))
 
     /**
-     * Extract the value for the key 'junitVersion' from the project's properties
+     * Extracts the value for the key 'junitVersion' from the project's properties
      * defined in the file 'gradle.properties'.
      */
     val junitVersion: String by project
@@ -194,7 +192,7 @@ pluginBundle {
 }
 
 /**
- * Check that the content of the 'LICENSE' file is applied to all
+ * Checks that the content of the 'LICENSE' file is applied to all
  * recursive files with the *.java and *.kt extensions and the files
  * build.gradle.kts, settings.gradle.kts and gradle.properties at the
  * root level of the project.
@@ -213,11 +211,43 @@ license {
 }
 
 /**
- * Configure the tasks of the project.
+ * Configures the tasks of the project.
  */
 tasks {
     /**
-     * Configure the Gradle wrapper with the version '5.6.3'.
+     * Configuration of all Kotlin compile tasks to use the jvmTarget 1.8.
+     */
+    withType(KotlinCompile::class) {
+        kotlinOptions {
+            /**
+             * Extracts the value for the key 'kotlinJvmTarget' from the project's properties
+             * defined in the file 'gradle.properties'.
+             */
+            val kotlinJvmTarget: String by project
+            jvmTarget = kotlinJvmTarget
+        }
+    }
+
+    /**
+     * Configures all Java compile tasks to use Java 1.8.
+     */
+    withType(JavaCompile::class) {
+        options.apply {
+            val javaVersion = JavaVersion.VERSION_1_8.toString()
+            targetCompatibility = javaVersion
+            sourceCompatibility = javaVersion
+        }
+    }
+
+    /**
+     * Enables Junit 5 Jupiter during the test runtime.
+     */
+    "test"(Test::class) {
+        useJUnitPlatform()
+    }
+
+    /**
+     * Configures the Gradle wrapper with the version '5.6.3'.
      */
     "wrapper"(Wrapper::class) {
         gradleVersion = "5.6.3"
@@ -229,52 +259,19 @@ tasks {
  * evaluated.
  */
 afterEvaluate {
-
     /**
-     * Configure the task of the project.
+     * Configures the tasks of the project.
      */
     tasks {
         /**
-         * Configuration of all Kotlin compile tasks to use the jvmTarget 1.8.
-         */
-        withType(KotlinCompile::class) {
-            kotlinOptions {
-                /**
-                 * Extract the value for the key 'kotlinJvmTarget' from the project's properties
-                 * defined in the file 'gradle.properties'.
-                 */
-                val kotlinJvmTarget: String by project
-                jvmTarget = kotlinJvmTarget
-            }
-        }
-
-        /**
-         * Configures all Java compile tasks to use Java 1.8.
-         */
-        withType(JavaCompile::class) {
-            options.apply {
-                val javaVersion = JavaVersion.VERSION_1_8.toString()
-                targetCompatibility = javaVersion
-                sourceCompatibility = javaVersion
-            }
-        }
-
-        /**
-         * Enable Junit 5 Jupiter during the test runtime.
-         */
-        "test"(Test::class) {
-            useJUnitPlatform()
-        }
-
-        /**
-         * Disable the 'javadoc' task.
+         * Disables the 'javadoc' task.
          */
         val javadoc by getting(Javadoc::class) {
             enabled = false
         }
 
         /**
-         * Produce the javadoc documentation for the Kotlin files inside the
+         * Produces the javadoc documentation for the Kotlin files inside the
          * output directory of the disabled 'javadoc' task
          */
         val dokka by getting(DokkaTask::class) {
