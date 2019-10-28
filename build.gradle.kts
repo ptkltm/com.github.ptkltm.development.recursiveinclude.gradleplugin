@@ -272,7 +272,7 @@ afterEvaluate {
 
         /**
          * Produces the javadoc documentation for the Kotlin files inside the
-         * output directory of the disabled 'javadoc' task
+         * output directory of the disabled 'javadoc' task.
          */
         val dokka by getting(DokkaTask::class) {
             outputFormat = "javadoc"

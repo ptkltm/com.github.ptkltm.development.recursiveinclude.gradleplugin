@@ -21,6 +21,44 @@ file is located.
 After one of the four files - 'settings.gradle', 'settings.gradle.kts', 'build.gradle' or
 'build.gradle.kts' - was found, the recursive search at the current path is stopped.
 
+## Usage
+
+The plugin with the id 'com.github.ptkltm.development.recursiveinclude' is hosted at the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.github.ptkltm.development.recursiveinclude) and can be applied via the following configurations to either a **settings.gradle.kts** or a **settings.gradle** file.
+
+- Configuration of a **settings.gradle.kts** file:
+
+```kotlin
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath(
+            group = "gradle.plugin.com.github.ptkltm.development.recursiveinclude.gradleplugin",
+            name = "com.github.ptkltm.development.recursiveinclude.gradleplugin",
+            version = "0.2.0"
+        )
+    }
+}
+
+apply(plugin = "com.github.ptkltm.development.recursiveinclude")
+```
+
+- Configuration of a **settings.gradle** file:
+
+```groovy
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'gradle.plugin.com.github.ptkltm.development.recursiveinclude.gradleplugin:com.github.ptkltm.development.recursiveinclude.gradleplugin:0.2.0'
+    }
+}
+
+apply plugin: 'com.github.ptkltm.development.recursiveinclude'
+```
+
 ## Building the source code
 
 - `git clone https://github.com/ptkltm/com.github.ptkltm.development.recursiveinclude.gradleplugin.git`
