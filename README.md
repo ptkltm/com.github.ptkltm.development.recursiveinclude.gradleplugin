@@ -34,9 +34,9 @@ buildscript {
     }
     dependencies {
         classpath(
-            group = "gradle.plugin.com.github.ptkltm.development.recursiveinclude.gradleplugin",
+            group = "com.github.ptkltm.development.recursiveinclude.gradleplugin",
             name = "com.github.ptkltm.development.recursiveinclude.gradleplugin",
-            version = "0.2.0"
+            version = "0.3.0"
         )
     }
 }
@@ -52,7 +52,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'gradle.plugin.com.github.ptkltm.development.recursiveinclude.gradleplugin:com.github.ptkltm.development.recursiveinclude.gradleplugin:0.2.0'
+        classpath 'com.github.ptkltm.development.recursiveinclude.gradleplugin:com.github.ptkltm.development.recursiveinclude.gradleplugin:0.3.0'
     }
 }
 

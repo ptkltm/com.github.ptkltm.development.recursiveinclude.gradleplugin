@@ -79,7 +79,7 @@ group = name
 /**
  * Sets the version of the project.
  */
-version = "0.2.0"
+version = "0.3.0"
 
 /**
  * Configures the repositories.
@@ -188,6 +188,16 @@ pluginBundle {
         maybeCreate("recursiveIncludePlugin").apply {
             displayName = "Recursive Include Plugin"
         }
+    }
+
+    /**
+     * Removes the 'gradle.plugin' prefix from the group of the Maven artifact
+     * of the plugin.
+     */
+    mavenCoordinates {
+        groupId = project.group.toString()
+        artifactId = project.name
+        version = project.version.toString()
     }
 }
 
