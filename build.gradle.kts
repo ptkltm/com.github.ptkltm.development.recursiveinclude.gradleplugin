@@ -51,7 +51,7 @@ plugins {
     id("org.gradle.kotlin-dsl.ktlint-convention") version "0.4.1"
 
     /**
-     * License manager for testing and applying the content of a 'LICENSE' file
+     * License manager for testing and applying the content of a 'LICENSE-HEADER' file
      * at the headers of various files.
      */
     id("net.minecrell.licenser") version "0.4.1"
@@ -202,12 +202,13 @@ pluginBundle {
 }
 
 /**
- * Checks that the content of the 'LICENSE' file is applied to all
+ * Checks that the content of the 'LICENSE-HEADER' file is applied to all
  * recursive files with the *.java and *.kt extensions and the files
  * build.gradle.kts, settings.gradle.kts and gradle.properties at the
  * root level of the project.
  */
 license {
+    header = file("LICENSE-HEADER")
     include("**/*.java", "**/*.kt")
     tasks {
         create("gradle") {
