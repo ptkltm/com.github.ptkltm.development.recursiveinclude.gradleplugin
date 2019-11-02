@@ -1,4 +1,5 @@
 # Recursive Include Plugin
+
 Gradle Plugin for the settings.gradle(.kts) file that automatically includes nested sub builds and sub projects.
 
 ## Implementation description
@@ -21,6 +22,10 @@ file is located.
 After one of the four files - 'settings.gradle', 'settings.gradle.kts', 'build.gradle' or
 'build.gradle.kts' - was found, the recursive search at the current path is stopped.
 
+## Current Version
+
+[ ![Download](https://api.bintray.com/packages/ptkltm/com.github.ptkltm.development/com.github.ptkltm.development.recursiveinclude.gradleplugin/images/download.svg?version=0.4.0) ](https://bintray.com/ptkltm/com.github.ptkltm.development/com.github.ptkltm.development.recursiveinclude.gradleplugin/0.4.0/link)
+
 ## Usage
 
 The plugin with the id 'com.github.ptkltm.development.recursiveinclude' is hosted at [Bintray](https://bintray.com/ptkltm/com.github.ptkltm.development/com.github.ptkltm.development.recursiveinclude.gradleplugin) and can be applied via the following configurations to either a **settings.gradle.kts** or a **settings.gradle** file.
@@ -29,7 +34,7 @@ The plugin with the id 'com.github.ptkltm.development.recursiveinclude' is hoste
 ```kotlin
 buildscript {
     repositories {
-        maven(url = "https://dl.bintray.com/ptkltm/com.github.ptkltm.development/")
+        jcenter()
     }
     dependencies {
         classpath(
@@ -48,9 +53,7 @@ apply(plugin = "com.github.ptkltm.development.recursiveinclude")
 ```groovy
 buildscript {
     repositories {
-        maven {
-          url 'https://dl.bintray.com/ptkltm/com.github.ptkltm.development/'
-        }
+        jcenter()
     }
     dependencies {
         classpath 'com.github.ptkltm.development.recursiveinclude.gradleplugin:com.github.ptkltm.development.recursiveinclude.gradleplugin:0.4.0'
