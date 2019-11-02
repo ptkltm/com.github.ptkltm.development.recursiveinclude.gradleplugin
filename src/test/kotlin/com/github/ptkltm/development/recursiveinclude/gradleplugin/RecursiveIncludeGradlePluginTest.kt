@@ -413,7 +413,7 @@ buildscript {
         classpath(
             group = "com.github.ptkltm.development.recursiveinclude.gradleplugin", 
             name = "com.github.ptkltm.development.recursiveinclude.gradleplugin",
-            version = "0.3.0"
+            version = "0.4.0"
         )
     }
 }

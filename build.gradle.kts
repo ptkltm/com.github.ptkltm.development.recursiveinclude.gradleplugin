@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+import com.jfrog.bintray.gradle.BintrayExtension.GpgConfig
+import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
+import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import java.net.URL
+import java.util.Date
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 
 /**
  * Applies the Gradle plugins used during the build.
@@ -26,6 +31,17 @@ plugins {
      * Plugin for building custom Gradle plugins.
      */
     `java-gradle-plugin`
+
+    /**
+     * Plugin for publishing Maven artifacts.
+     */
+    `maven-publish`
+
+    /**
+     * Gradle plugin for publishing Maven artifacts to
+     * the Bintray repository.
+     */
+    id("com.jfrog.bintray") version "1.8.4"
 
     /**
      * Gradle plugin for publishing custom Gradle plugins to
@@ -72,14 +88,30 @@ plugins {
 }
 
 /**
- * Declares the name of the project group to the name of the project.
+ * Sets the name of the project group to the name of the project.
  */
 group = name
 
 /**
+ * Sets the description of the project.
+ */
+description = "Plugin for recursively applying sub projects and sub builds."
+
+/**
  * Sets the version of the project.
  */
-version = "0.3.0"
+version = "0.4.0"
+
+/**
+ * The labels of the project.
+ */
+val projectLabels = listOf("automation", "recursiveinclude", "subprojects", "subbuilds", "compositebuilds", "build")
+
+/**
+ * The name of the publication for the ´maven-publish´ plugin that is referenced by the 'bintray' configuration
+ * of the 'com.jfrog.bintray' plugin.
+ */
+val publicationName = "pluginMaven"
 
 /**
  * Configures the repositories.
@@ -178,15 +210,19 @@ gradlePlugin {
  * Gradle Plugin portal.
  */
 pluginBundle {
-    val githubProjectUrl = "https://github.com/ptkltm/com.github.ptkltm.development.recursiveinclude.gradleplugin"
-    website = githubProjectUrl
-    vcsUrl = githubProjectUrl
-    description = "Plugin for recursively applying sub projects and composite builds."
-    tags = listOf("automation", "recursiveinclude", "subprojects", "subbuilds", "compositebuilds", "build", "gradle")
+    /**
+     * Extracts the value for the key 'repositoryUrl' from the projects's properties
+     * defined in the file 'gradle.properties'.
+     */
+    val repositoryUrl: String by project
+    website = repositoryUrl
+    vcsUrl = repositoryUrl
+    description = project.description
+    tags = projectLabels
 
     plugins {
         maybeCreate("recursiveIncludePlugin").apply {
-            displayName = "Recursive Include Plugin"
+            displayName = project.findProperty("projectDisplayName").toString()
         }
     }
 
@@ -199,6 +235,154 @@ pluginBundle {
         artifactId = project.name
         version = project.version.toString()
     }
+}
+
+/**
+ * Configures the metadata of the pom.xml for the Maven publication.
+ */
+publishing {
+    publications {
+        create(publicationName, MavenPublication::class) {
+            pom {
+                /**
+                 * Extracts the value for the key 'projectDisplayName' from the projects's properties
+                 * defined in the file 'gradle.properties'.
+                 */
+                val projectDisplayName: String by project
+
+                /**
+                 * Extracts the value for the key 'repositoryUrl' from the projects's properties
+                 * defined in the file 'gradle.properties'.
+                 */
+                val repositoryUrl: String by project
+
+                /**
+                 * Extracts the value for the key 'developerName' from the projects's properties
+                 * defined in the file 'gradle.properties'.
+                 */
+                val developerName: String by project
+
+                /**
+                 * Extracts the value for the key 'developerEmail' from the projects's properties
+                 * defined in the file 'gradle.properties'.
+                 */
+                val developerEmail: String by project
+
+                name.set(projectDisplayName)
+                description.set(project.description)
+                inceptionYear.set("2019")
+                organization {
+                    name.set(developerName)
+                    url.set("https://github.com/ptkltm")
+                }
+                developers {
+                    developer {
+                        name.set(developerName)
+                        email.set(developerEmail)
+                    }
+                }
+                licenses {
+                    license {
+                        name.set("The Apache Software License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        distribution.set("repo")
+                    }
+                }
+                issueManagement {
+                    system.set("GitHub")
+                    url.set("$repositoryUrl/issues")
+                }
+                scm {
+                    url.set(repositoryUrl)
+                    tag.set(project.version.toString())
+                }
+            }
+
+            afterEvaluate {
+                val publishPluginJar by tasks.getting(Jar::class)
+                val publishPluginJavaDocsJar by tasks.getting(Jar::class)
+
+                artifact(publishPluginJar)
+                artifact(publishPluginJavaDocsJar)
+            }
+        }
+    }
+}
+
+/**
+ * Configuration of the plugin publication to the Bintray repository.
+ * If the plugin should be published to Bintray the Gradle task 'bintrayUpload' must be executed with the
+ * command line parameters
+ * '-PisReleasePublication=true -PbintrayUser=<username> -PbintrayKey=<apikey> -PgpgPassphrase=<passphrase>'.
+ *
+ */
+bintray {
+    /**
+     * Extracts a bintray value from either the property in the gradle.properties.kts file
+     * or the environment variable.
+     *
+     * For the properties in the gradle.properties.kts file camel-case is used (e. g. 'bintrayUser' for 'user')
+     * and for environment variables upper snake-case is used (e. g. 'BINTRAY_USER' for 'user').
+     *
+     * @receiver The key being prefixed with either 'bintray' for the build.gradle.kts properties
+     * or 'BINTRAY_' for the environment variable approach.
+     */
+    fun String.extractValue(): String? {
+        val propertyName = "bintray${capitalize()}"
+        return if (hasProperty(propertyName))
+            property(propertyName)?.toString()
+        else
+            System.getenv("BINTRAY_${toUpperCase()}")
+    }
+
+    user = "user".extractValue()
+    key = "key".extractValue()
+    setPublications(publicationName)
+
+    /**
+     * Extracts the value for the key 'isReleasePublication' from the project's properties
+     * defined in the file 'gradle.properties'.
+     */
+    val isReleasePublication: String by project
+    publish = "true" == isReleasePublication
+
+    pkg(closureOf<PackageConfig> {
+        name = project.name
+        repo = name.substringBeforeLast(delimiter = '.')
+                .substringBeforeLast(delimiter = '.')
+        version(closureOf<VersionConfig> {
+            name = project.version.toString()
+            desc = project.description
+            released = Date().toString()
+            vcsTag = name
+            gpg(closureOf<GpgConfig> {
+                if (publish) {
+                    /**
+                     * Extracts the value for the key 'gpgPassphrase' from the project's properties
+                     * defined in the file 'gradle.properties'.
+                     */
+                    val gpgPassphrase: String by project
+                    passphrase = gpgPassphrase
+                }
+                sign = true
+            })
+        })
+        setLabels(*listOf("gradle", "gradleplugin").union(other = projectLabels).toTypedArray())
+        setLicenses("Apache-2.0")
+
+        /**
+         * Extracts the value for the key 'repositoryUrl' from the projects's properties
+         * defined in the file 'gradle.properties'.
+         */
+        val repositoryUrl: String by project
+
+        vcsUrl = "$repositoryUrl.git"
+        githubRepo = repositoryUrl
+        githubReleaseNotesFile = "README.md"
+        websiteUrl = repositoryUrl
+        issueTrackerUrl = "$repositoryUrl/issues"
+        publicDownloadNumbers = true
+    })
 }
 
 /**
