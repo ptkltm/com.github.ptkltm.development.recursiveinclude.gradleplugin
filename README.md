@@ -23,20 +23,19 @@ After one of the four files - 'settings.gradle', 'settings.gradle.kts', 'build.g
 
 ## Usage
 
-The plugin with the id 'com.github.ptkltm.development.recursiveinclude' is hosted at the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.github.ptkltm.development.recursiveinclude) and can be applied via the following configurations to either a **settings.gradle.kts** or a **settings.gradle** file.
-
+The plugin with the id 'com.github.ptkltm.development.recursiveinclude' is hosted at [Bintray](https://bintray.com/ptkltm/com.github.ptkltm.development/com.github.ptkltm.development.recursiveinclude.gradleplugin) and can be applied via the following configurations to either a **settings.gradle.kts** or a **settings.gradle** file.
 - Configuration of a **settings.gradle.kts** file:
 
 ```kotlin
 buildscript {
     repositories {
-        gradlePluginPortal()
+        maven(url = "https://dl.bintray.com/ptkltm/com.github.ptkltm.development/")
     }
     dependencies {
         classpath(
             group = "com.github.ptkltm.development.recursiveinclude.gradleplugin",
             name = "com.github.ptkltm.development.recursiveinclude.gradleplugin",
-            version = "0.3.0"
+            version = "0.4.0"
         )
     }
 }
@@ -49,10 +48,12 @@ apply(plugin = "com.github.ptkltm.development.recursiveinclude")
 ```groovy
 buildscript {
     repositories {
-        gradlePluginPortal()
+        maven {
+          url 'https://dl.bintray.com/ptkltm/com.github.ptkltm.development/'
+        }
     }
     dependencies {
-        classpath 'com.github.ptkltm.development.recursiveinclude.gradleplugin:com.github.ptkltm.development.recursiveinclude.gradleplugin:0.3.0'
+        classpath 'com.github.ptkltm.development.recursiveinclude.gradleplugin:com.github.ptkltm.development.recursiveinclude.gradleplugin:0.4.0'
     }
 }
 
