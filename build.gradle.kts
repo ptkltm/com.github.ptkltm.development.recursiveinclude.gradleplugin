@@ -172,7 +172,7 @@ dependencies {
      * the execution of the 'test' task with the [Test.useJUnitPlatform]
      * configuration.
      */
-    testRuntime(
+    testRuntimeOnly(
         group = "org.junit.jupiter",
         name = "junit-jupiter-engine",
         version = junitVersion
@@ -427,11 +427,9 @@ tasks {
      * Configures all Java compile tasks to use Java 1.8.
      */
     withType(JavaCompile::class) {
-        options.apply {
-            val javaVersion = JavaVersion.VERSION_1_8.toString()
-            targetCompatibility = javaVersion
-            sourceCompatibility = javaVersion
-        }
+        val javaVersion = JavaVersion.VERSION_1_8.toString()
+        targetCompatibility = javaVersion
+        sourceCompatibility = javaVersion
     }
 
     /**
@@ -442,10 +440,10 @@ tasks {
     }
 
     /**
-     * Configures the Gradle wrapper with the version '6.0'.
+     * Configures the Gradle wrapper with the version '6.0.1'.
      */
     "wrapper"(Wrapper::class) {
-        gradleVersion = "6.0"
+        gradleVersion = "6.0.1"
     }
 }
 

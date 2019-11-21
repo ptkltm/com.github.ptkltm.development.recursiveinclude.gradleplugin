@@ -74,12 +74,10 @@ class RecursiveIncludeGradlePlugin : Plugin<Settings> {
      */
     override fun apply(
         settings: Settings
-    ) {
-        settings.run {
-            rootProject.name = rootDir.name
-            rootDir.listFiles()?.filter { it.isVisibleDirectory }?.forEach {
-                applyDirectoryRecursive(directory = it)
-            }
+    ): Unit = settings.run {
+        rootProject.name = rootDir.name
+        rootDir.listFiles()?.filter { it.isVisibleDirectory }?.forEach {
+            applyDirectoryRecursive(directory = it)
         }
     }
 

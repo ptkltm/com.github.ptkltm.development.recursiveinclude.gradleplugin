@@ -223,7 +223,7 @@ tasks {
     /**
      * Reusable function for the test of recursively included sub projects.
      * Generates a temporary project structure and tests the logic of the
-     * 'com.github.ptkltm.development.recursiveinclue' plugin during a Gradle build.
+     * 'com.github.ptkltm.development.recursiveinclude' plugin during a Gradle build.
      * For more information see the method-level documentation of [verifyRecursiveBuildInclude].
      *
      * @receiver The path of the parent directory.
