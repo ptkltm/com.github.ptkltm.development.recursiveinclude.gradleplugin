@@ -56,12 +56,6 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.0"
 
     /**
-     * Source quality plugin for checking the code style of
-     * Kotlin files.
-     */
-    id("io.gitlab.arturbosch.detekt") version "1.1.1"
-
-    /**
      * Plugin for checking the coding-conventions of *.kt and *.kts files.
      */
     id("org.gradle.kotlin-dsl.ktlint-convention") version "0.4.1"
@@ -79,6 +73,11 @@ plugins {
      * environment variable if no 'JAVA_HOME' variable is already available.
      */
     id("com.github.rmee.jdk-bootstrap") version "1.0.20190725142159"
+
+    /**
+     * Plugin that configures the project as 'Implementation' project.
+     */
+    id("com.github.ptkltm.development.fullstackproject.implementation")
 
     /**
      * Plugin for the configuration of the Kotlin infrastructure
@@ -376,8 +375,14 @@ bintray {
          */
         val repositoryUrl: String by project
 
+        /**
+         * Extracts the value for the key 'gitHubRepository' from the projects's properties
+         * defined in the file 'gradle.properties'.
+         */
+        val gitHubRepository: String by project
+
         vcsUrl = "$repositoryUrl.git"
-        githubRepo = repositoryUrl
+        githubRepo = gitHubRepository
         githubReleaseNotesFile = "README.md"
         websiteUrl = repositoryUrl
         issueTrackerUrl = "$repositoryUrl/issues"
@@ -435,15 +440,15 @@ tasks {
     /**
      * Enables Junit 5 Jupiter during the test runtime.
      */
-    "test"(Test::class) {
+    test {
         useJUnitPlatform()
     }
 
     /**
-     * Configures the Gradle wrapper with the version '6.1'.
+     * Configures the Gradle wrapper with the version '6.1.1'.
      */
-    "wrapper"(Wrapper::class) {
-        gradleVersion = "6.1"
+    wrapper {
+        gradleVersion = "6.1.1"
     }
 }
 
