@@ -93,11 +93,13 @@ buildscript {
          * Classpath dependency to version '0.4.0' of the artifact that provides the Gradle plugin with the id
          * 'com.github.ptkltm.development.recursiveinclude'.
          */
-        classpath(
-            group = "com.github.ptkltm.development.recursiveinclude.gradleplugin",
-            name = "com.github.ptkltm.development.recursiveinclude.gradleplugin",
-            version = "0.4.0"
-        )
+        "com.github.ptkltm.development.recursiveinclude.gradleplugin".let {
+            classpath(
+                group = it,
+                name = it,
+                version = "0.4.0"
+            )
+        }
     }
 }
 
