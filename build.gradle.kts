@@ -53,7 +53,7 @@ plugins {
      * Plugin for generating a documentation based on the source
      * code comments at the Kotlin files.
      */
-    id("org.jetbrains.dokka") version "0.10.0"
+    id("org.jetbrains.dokka") version "0.10.1"
 
     /**
      * Plugin for checking the coding-conventions of *.kt and *.kts files.
@@ -75,7 +75,7 @@ plugins {
      * Plugin for the configuration of the Kotlin infrastructure
      * for building Kotlin code based on the Java Virtual Machine.
      */
-    kotlin(module = "jvm") version "1.3.61"
+    kotlin(module = "jvm") version "1.3.70"
 }
 
 /**
@@ -423,10 +423,10 @@ tasks {
     }
 
     /**
-     * Configures the Gradle wrapper with the version '6.2'.
+     * Configures the Gradle wrapper with the version '6.2.2'.
      */
     wrapper {
-        gradleVersion = "6.2"
+        gradleVersion = "6.2.2"
     }
 }
 
