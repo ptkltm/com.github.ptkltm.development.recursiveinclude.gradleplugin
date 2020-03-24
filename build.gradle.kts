@@ -423,10 +423,10 @@ tasks {
     }
 
     /**
-     * Configures the Gradle wrapper with the version '6.2.2'.
+     * Configures the Gradle wrapper with the version '6.3'.
      */
     wrapper {
-        gradleVersion = "6.2.2"
+        gradleVersion = "6.3"
     }
 }
 
