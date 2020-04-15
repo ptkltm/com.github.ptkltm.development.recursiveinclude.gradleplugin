@@ -75,7 +75,7 @@ plugins {
      * Plugin for the configuration of the Kotlin infrastructure
      * for building Kotlin code based on the Java Virtual Machine.
      */
-    kotlin(module = "jvm") version "1.3.71"
+    kotlin(module = "jvm") version "1.3.72"
 }
 
 /**
