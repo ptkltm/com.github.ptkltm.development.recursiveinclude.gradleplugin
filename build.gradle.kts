@@ -53,12 +53,12 @@ plugins {
      * Plugin for generating a documentation based on the source
      * code comments at the Kotlin files.
      */
-    id("org.jetbrains.dokka") version "0.10.1"
+    id("org.jetbrains.dokka") version "1.4.0-rc"
 
     /**
      * Plugin for checking the coding-conventions of *.kt and *.kts files.
      */
-    id("org.gradle.kotlin-dsl.ktlint-convention") version "0.4.1"
+    id("org.gradle.kotlin-dsl.ktlint-convention") version "0.5.0"
 
     /**
      * License manager for testing and applying the content of a 'LICENSE-HEADER' file
@@ -75,7 +75,7 @@ plugins {
      * Plugin for the configuration of the Kotlin infrastructure
      * for building Kotlin code based on the Java Virtual Machine.
      */
-    kotlin(module = "jvm") version "1.3.72"
+    kotlin(module = "jvm") version "1.4.0"
 }
 
 /**
@@ -450,27 +450,28 @@ afterEvaluate {
          * Produces the javadoc documentation for the Kotlin files inside the
          * output directory of the disabled 'javadoc' task.
          */
-        val dokka by getting(DokkaTask::class) {
-            outputFormat = "javadoc"
+        val dokkaJavadoc by getting(DokkaTask::class) {
             outputDirectory = javadoc.destinationDir?.absolutePath ?: ""
-            configuration {
-                externalDocumentationLink {
-                    val externalGradleJavaDocUrl = "https://docs.gradle.org/current/javadoc/"
-                    url = URL(externalGradleJavaDocUrl)
-                    packageListUrl = URL("${externalGradleJavaDocUrl}package-list")
+            dokkaSourceSets {
+                configureEach {
+                    externalDocumentationLink {
+                        val externalGradleJavaDocUrl = "https://docs.gradle.org/current/javadoc/"
+                        url = URL(externalGradleJavaDocUrl)
+                        packageListUrl = URL("${externalGradleJavaDocUrl}package-list")
+                    }
+                    skipDeprecated = true
+                    skipEmptyPackages = true
+                    reportUndocumented = true
                 }
-                skipDeprecated = true
-                skipEmptyPackages = true
-                reportUndocumented = true
             }
         }
 
         /**
          * Instead of the output of the disabled 'javadoc' task, the JavaDoc jar
-         * now uses the 'dokka' output by depending on the task.
+         * now uses the 'dokkaJavadoc' output by depending on the task.
          */
         "publishPluginJavaDocsJar" {
-            dependsOn(dokka)
+            dependsOn(dokkaJavadoc)
         }
     }
 }
