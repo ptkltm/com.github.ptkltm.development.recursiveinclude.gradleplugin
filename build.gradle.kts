@@ -53,7 +53,7 @@ plugins {
      * Plugin for generating a documentation based on the source
      * code comments at the Kotlin files.
      */
-    id("org.jetbrains.dokka") version "1.4.0-rc"
+    id("org.jetbrains.dokka") version "1.4.10.2"
 
     /**
      * Plugin for checking the coding-conventions of *.kt and *.kts files.
@@ -451,17 +451,17 @@ afterEvaluate {
          * output directory of the disabled 'javadoc' task.
          */
         val dokkaJavadoc by getting(DokkaTask::class) {
-            outputDirectory = javadoc.destinationDir?.absolutePath ?: ""
+            outputDirectory.set(javadoc.destinationDir)
             dokkaSourceSets {
                 configureEach {
                     externalDocumentationLink {
                         val externalGradleJavaDocUrl = "https://docs.gradle.org/current/javadoc/"
-                        url = URL(externalGradleJavaDocUrl)
-                        packageListUrl = URL("${externalGradleJavaDocUrl}package-list")
+                        url.set(URL(externalGradleJavaDocUrl))
+                        packageListUrl.set(URL("${externalGradleJavaDocUrl}package-list"))
                     }
-                    skipDeprecated = true
-                    skipEmptyPackages = true
-                    reportUndocumented = true
+                    skipDeprecated.set(true)
+                    skipEmptyPackages.set(true)
+                    reportUndocumented.set(true)
                 }
             }
         }
